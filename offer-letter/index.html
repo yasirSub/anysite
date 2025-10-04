@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Offer Letter - AnySite</title>
+    <link rel="stylesheet" href="offer-styles.css">
+</head>
+<body>
+    <div class="offer-container">
+        <div class="offer-header">
+            <button class="back-button" onclick="goBack()">← Back to Features</button>
+            <h1 class="offer-title">Create Offer Letter</h1>
+        </div>
+
+        <div class="offer-content">
+            <div class="form-section">
+                <!-- Template Selection -->
+                <div class="section-header">
+                    <h3>📋 Template Selection</h3>
+                </div>
+                <div class="template-grid">
+                    <div class="template-card active" data-template="modern">
+                        <div class="template-preview modern-preview"></div>
+                        <span>Modern</span>
+                    </div>
+                    <div class="template-card" data-template="classic">
+                        <div class="template-preview classic-preview"></div>
+                        <span>Classic</span>
+                    </div>
+                    <div class="template-card" data-template="minimal">
+                        <div class="template-preview minimal-preview"></div>
+                        <span>Minimal</span>
+                    </div>
+                    <div class="template-card" data-template="corporate">
+                        <div class="template-preview corporate-preview"></div>
+                        <span>Corporate</span>
+                    </div>
+                </div>
+
+                <!-- Letter Templates -->
+                <div class="section-header">
+                    <h3>📝 Letter Templates</h3>
+                </div>
+                <div class="letter-templates">
+                    <div class="template-row">
+                        <button type="button" class="template-btn" onclick="loadTemplate('software-engineer')">
+                            <div class="template-icon">💻</div>
+                            <span>Software Engineer</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('marketing-manager')">
+                            <div class="template-icon">📈</div>
+                            <span>Marketing Manager</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('sales-rep')">
+                            <div class="template-icon">💼</div>
+                            <span>Sales Rep</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('designer')">
+                            <div class="template-icon">🎨</div>
+                            <span>UX Designer</span>
+                        </button>
+                    </div>
+                    <div class="template-row">
+                        <button type="button" class="template-btn" onclick="loadTemplate('intern')">
+                            <div class="template-icon">🎓</div>
+                            <span>Intern</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('contractor')">
+                            <div class="template-icon">📋</div>
+                            <span>Contractor</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('executive')">
+                            <div class="template-icon">👔</div>
+                            <span>Executive</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('remote')">
+                            <div class="template-icon">🏠</div>
+                            <span>Remote Worker</span>
+                        </button>
+                    </div>
+                    <div class="template-row">
+                        <button type="button" class="template-btn" onclick="loadTemplate('promotion')">
+                            <div class="template-icon">⬆️</div>
+                            <span>Promotion</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('welcome')">
+                            <div class="template-icon">👋</div>
+                            <span>Welcome</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('contract-renewal')">
+                            <div class="template-icon">🔄</div>
+                            <span>Contract Renewal</span>
+                        </button>
+                        <button type="button" class="template-btn" onclick="loadTemplate('clear')">
+                            <div class="template-icon">🗑️</div>
+                            <span>Clear All</span>
+                        </button>
+                    </div>
+                </div>
+
+                    <!-- Styling Options -->
+                    <div class="section-header">
+                        <h3>🎨 Styling Options</h3>
+                    </div>
+                    <div class="styling-options">
+                        <div class="style-group">
+                            <label>Color Scheme:</label>
+                            <div class="color-schemes">
+                                <div class="color-option active" data-scheme="blue">
+                                    <div class="color-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></div>
+                                    <span>Blue</span>
+                                </div>
+                                <div class="color-option" data-scheme="green">
+                                    <div class="color-preview" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%)"></div>
+                                    <span>Green</span>
+                                </div>
+                                <div class="color-option" data-scheme="red">
+                                    <div class="color-preview" style="background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%)"></div>
+                                    <span>Red</span>
+                                </div>
+                                <div class="color-option" data-scheme="purple">
+                                    <div class="color-preview" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)"></div>
+                                    <span>Purple</span>
+                                </div>
+                                <div class="color-option" data-scheme="orange">
+                                    <div class="color-preview" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%)"></div>
+                                    <span>Orange</span>
+                                </div>
+                                <div class="color-option" data-scheme="teal">
+                                    <div class="color-preview" style="background: linear-gradient(135deg, #009688 0%, #00695c 100%)"></div>
+                                    <span>Teal</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="style-group">
+                            <label>Writing Tone:</label>
+                            <div class="tone-options">
+                                <button type="button" class="tone-btn active" data-tone="professional">Professional</button>
+                                <button type="button" class="tone-btn" data-tone="friendly">Friendly</button>
+                                <button type="button" class="tone-btn" data-tone="enthusiastic">Enthusiastic</button>
+                                <button type="button" class="tone-btn" data-tone="formal">Formal</button>
+                            </div>
+                        </div>
+
+                        <div class="style-group">
+                            <label for="fontFamily">Font Family:</label>
+                            <select id="fontFamily" name="fontFamily">
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Calibri">Calibri</option>
+                                <option value="Verdana">Verdana</option>
+                                <option value="Roboto">Roboto</option>
+                                <option value="Open Sans">Open Sans</option>
+                                <option value="Lato">Lato</option>
+                            </select>
+                        </div>
+
+                        <div class="style-group">
+                            <label for="fontSize">Font Size:</label>
+                            <select id="fontSize" name="fontSize">
+                                <option value="11">11px</option>
+                                <option value="12">12px</option>
+                                <option value="14" selected>14px</option>
+                                <option value="16">16px</option>
+                                <option value="18">18px</option>
+                                <option value="20">20px</option>
+                            </select>
+                        </div>
+                    </div>
+
+                <!-- Logo Upload -->
+                <div class="section-header">
+                    <h3>🏢 Company Branding</h3>
+                </div>
+                <div class="logo-upload">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <div class="upload-icon">📁</div>
+                            <p>Click to upload company logo</p>
+                            <small>PNG, JPG, SVG up to 2MB</small>
+                        </div>
+                        <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="logo-preview" id="logoPreview" style="display: none;">
+                        <img id="logoImage" src="" alt="Company Logo">
+                        <button type="button" class="remove-logo" onclick="removeLogo()">✕</button>
+                    </div>
+                </div>
+
+                <!-- Form Fields -->
+                <div class="section-header">
+                    <h3>📝 Letter Details</h3>
+                </div>
+                <form id="offerForm" class="offer-form">
+                    <div class="form-group">
+                        <label for="letterType">Letter Type/Title:</label>
+                        <div class="letter-type-container">
+                            <input type="text" id="letterType" name="letterType" value="Offer Letter" placeholder="e.g., Offer Letter, Contract Letter, Welcome Letter">
+                            <div class="quick-types">
+                                <button type="button" class="quick-type-btn" onclick="setLetterType('Offer Letter')">Offer</button>
+                                <button type="button" class="quick-type-btn" onclick="setLetterType('Contract Letter')">Contract</button>
+                                <button type="button" class="quick-type-btn" onclick="setLetterType('Welcome Letter')">Welcome</button>
+                                <button type="button" class="quick-type-btn" onclick="setLetterType('Promotion Letter')">Promotion</button>
+                                <button type="button" class="quick-type-btn" onclick="setLetterType('Termination Letter')">Termination</button>
+                                <button type="button" class="quick-type-btn" onclick="setLetterType('Job Offer')">Job Offer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" name="companyName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="candidateName">Candidate Name *</label>
+                        <input type="text" id="candidateName" name="candidateName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="position">Position/Job Title *</label>
+                        <input type="text" id="position" name="position" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="salary">Annual Salary *</label>
+                        <input type="number" id="salary" name="salary" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startDate">Start Date *</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Work Location</label>
+                        <input type="text" id="location" name="location" placeholder="e.g., New York, NY">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="benefits">Benefits (Optional)</label>
+                        <textarea id="benefits" name="benefits" rows="3" placeholder="Health insurance, 401k, vacation days, etc."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalNotes">Additional Notes (Optional)</label>
+                        <textarea id="additionalNotes" name="additionalNotes" rows="3" placeholder="Any additional terms or conditions"></textarea>
+                    </div>
+
+                    <!-- Layout Options -->
+                    <div class="section-header">
+                        <h3>📐 Layout Options</h3>
+                    </div>
+                    <div class="layout-options">
+                        <div class="layout-group">
+                            <label>Letter Layout:</label>
+                            <div class="layout-buttons">
+                                <button type="button" class="layout-btn active" data-layout="standard">Standard</button>
+                                <button type="button" class="layout-btn" data-layout="compact">Compact</button>
+                                <button type="button" class="layout-btn" data-layout="detailed">Detailed</button>
+                                <button type="button" class="layout-btn" data-layout="executive">Executive</button>
+                                <button type="button" class="layout-btn" data-layout="casual">Casual</button>
+                                <button type="button" class="layout-btn" data-layout="formal">Formal</button>
+                                <button type="button" class="layout-btn" data-layout="creative">Creative</button>
+                                <button type="button" class="layout-btn" data-layout="minimalist">Minimalist</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signature Options -->
+                    <div class="section-header">
+                        <h3>✍️ Signature Options</h3>
+                    </div>
+                    <div class="signature-options">
+                        <div class="signature-group">
+                            <label for="hrName">HR Representative Name:</label>
+                            <input type="text" id="hrName" name="hrName" placeholder="e.g., Sarah Johnson" value="Sarah Johnson">
+                        </div>
+
+                        <div class="signature-group">
+                            <label for="hrTitle">HR Representative Title:</label>
+                            <select id="hrTitle" name="hrTitle">
+                                <option value="Human Resources Manager">Human Resources Manager</option>
+                                <option value="HR Director">HR Director</option>
+                                <option value="Talent Acquisition Manager">Talent Acquisition Manager</option>
+                                <option value="People Operations Manager">People Operations Manager</option>
+                                <option value="HR Business Partner">HR Business Partner</option>
+                                <option value="Chief People Officer">Chief People Officer</option>
+                                <option value="VP of Human Resources">VP of Human Resources</option>
+                                <option value="custom">Custom Title</option>
+                            </select>
+                            <input type="text" id="customHrTitle" name="customHrTitle" placeholder="Enter custom title" style="display: none; margin-top: 10px;">
+                        </div>
+
+                        <div class="signature-group">
+                            <label for="signatureStyle">Signature Style:</label>
+                            <div class="signature-styles">
+                                <button type="button" class="signature-btn active" data-style="formal">Formal</button>
+                                <button type="button" class="signature-btn" data-style="friendly">Friendly</button>
+                                <button type="button" class="signature-btn" data-style="executive">Executive</button>
+                                <button type="button" class="signature-btn" data-style="simple">Simple</button>
+                            </div>
+                        </div>
+
+                        <div class="signature-group">
+                            <label for="includeContact">Include Contact Information:</label>
+                            <div class="contact-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="includeEmail" name="includeEmail" checked>
+                                    <span>Email Address</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="includePhone" name="includePhone">
+                                    <span>Phone Number</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="includeAddress" name="includeAddress">
+                                    <span>Office Address</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="signature-group">
+                            <label for="hrEmail">HR Email:</label>
+                            <input type="email" id="hrEmail" name="hrEmail" placeholder="hr@company.com" value="hr@company.com">
+                        </div>
+
+                        <div class="signature-group">
+                            <label for="hrPhone">HR Phone:</label>
+                            <input type="tel" id="hrPhone" name="hrPhone" placeholder="(555) 123-4567">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="preview-btn" onclick="previewOffer()">Preview Letter</button>
+                        <button type="button" class="generate-btn" onclick="generateOffer()">Generate PDF</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="preview-section" id="previewSection">
+                <div class="preview-header">
+                    <h3>Live Preview</h3>
+                    <div class="preview-controls">
+                        <button class="refresh-btn" onclick="updateLivePreview()">🔄 Refresh</button>
+                        <button class="close-preview" onclick="togglePreview()">📱 Hide</button>
+                    </div>
+                </div>
+                <div class="letter-preview" id="letterPreview">
+                    <!-- Generated letter will appear here -->
+                    <div class="default-preview">
+                        <div class="preview-placeholder">
+                            <div class="placeholder-icon">📄</div>
+                            <h4>Live Preview</h4>
+                            <p>Start filling out the form to see your offer letter appear here in real-time!</p>
+                            <div class="preview-features">
+                                <div class="feature-item">✅ Template selection</div>
+                                <div class="feature-item">✅ Color schemes</div>
+                                <div class="feature-item">✅ Logo upload</div>
+                                <div class="feature-item">✅ Font customization</div>
+                                <div class="feature-item">✅ Layout options</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="offer-script.js"></script>
+</body>
+</html>
