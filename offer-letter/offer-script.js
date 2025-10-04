@@ -7,7 +7,7 @@ let selectedTone = 'professional';
 let uploadedLogo = null;
 
 // Template styles
-const templates = {
+const templateStyles = {
     modern: {
         headerColor: '#667eea',
         accentColor: '#764ba2',
@@ -99,7 +99,7 @@ function generateLetterHTML(formData) {
     // Safe formatting with fallbacks for partial data
     const formattedSalary = formData.salary ? formatCurrency(parseInt(formData.salary)) : '[Salary]';
     const formattedStartDate = formData.startDate ? formatDate(formData.startDate) : '[Start Date]';
-    const template = templates[selectedTemplate];
+    const template = templateStyles[selectedTemplate];
     const colors = colorSchemes[selectedColorScheme];
     const fontFamily = document.getElementById('fontFamily') ? document.getElementById('fontFamily').value : 'Times New Roman';
     const fontSize = document.getElementById('fontSize') ? document.getElementById('fontSize').value + 'px' : '14px';
@@ -555,7 +555,7 @@ function generateSignature(formData) {
                     <p><strong>${hrName}</strong><br>
                     ${finalTitle}<br>
                     ${companyName}</p>
-                    ${generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone)}
+                    ${generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone, formData.officeAddress)}
                 </div>
             `;
             break;
@@ -567,7 +567,7 @@ function generateSignature(formData) {
                     <p><strong>${hrName}</strong><br>
                     ${finalTitle}<br>
                     ${companyName}</p>
-                    ${generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone)}
+                    ${generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone, formData.officeAddress)}
                     <p style="margin-top: 15px; font-style: italic; color: #666;">Looking forward to having you on our team!</p>
                 </div>
             `;
@@ -580,7 +580,7 @@ function generateSignature(formData) {
                     <p><strong>${hrName}</strong><br>
                     ${finalTitle}<br>
                     ${companyName}</p>
-                    ${generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone)}
+                    ${generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone, formData.officeAddress)}
                     <p style="margin-top: 10px; font-size: 12px; color: #888;">Direct: ${hrPhone || '[Phone]'} | Email: ${hrEmail || '[Email]'}</p>
                 </div>
             `;
@@ -613,7 +613,7 @@ function generateSignature(formData) {
 }
 
 // Generate contact information based on checkboxes
-function generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone) {
+function generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail, hrPhone, officeAddress) {
     let contactHTML = '';
     
     if (includeEmail && hrEmail) {
@@ -624,62 +624,87 @@ function generateContactInfo(includeEmail, includePhone, includeAddress, hrEmail
         contactHTML += `<p>Phone: ${hrPhone}</p>`;
     }
     
-    if (includeAddress) {
-        contactHTML += `<p>Office Address: [Office Address]</p>`;
+    if (includeAddress && officeAddress) {
+        contactHTML += `<p>Office Address:<br>${officeAddress.replace(/\n/g, '<br>')}</p>`;
     }
     
     return contactHTML;
 }
 
-// Update live preview with debouncing for better performance
-let previewTimeout;
+// Update live preview - simplified version
 function updateLivePreview() {
-    // Clear previous timeout
-    clearTimeout(previewTimeout);
-    
-    // Set new timeout for smooth typing experience
-    previewTimeout = setTimeout(() => {
+    try {
         const form = document.getElementById('offerForm');
-        const formData = new FormData(form);
+        const previewElement = document.getElementById('letterPreview');
         
-        // Convert FormData to object
-        const data = {};
-        for (const [key, value] of formData.entries()) {
-            data[key] = value;
+        if (!form || !previewElement) {
+            console.error('Form or preview element not found');
+            return;
         }
         
-        // Check if we have any content to show preview
-        const hasAnyContent = Object.values(data).some(value => value && value.trim() !== '');
+        // Get form data
+        const data = {
+            letterType: document.getElementById('letterType')?.value || '',
+            companyName: document.getElementById('companyName')?.value || '',
+            candidateName: document.getElementById('candidateName')?.value || '',
+            position: document.getElementById('position')?.value || '',
+            salary: document.getElementById('salary')?.value || '',
+            startDate: document.getElementById('startDate')?.value || '',
+            location: document.getElementById('location')?.value || '',
+            benefits: document.getElementById('benefits')?.value || '',
+            additionalNotes: document.getElementById('additionalNotes')?.value || '',
+            hrName: document.getElementById('hrName')?.value || '',
+            hrTitle: document.getElementById('hrTitle')?.value || '',
+            hrEmail: document.getElementById('hrEmail')?.value || '',
+            hrPhone: document.getElementById('hrPhone')?.value || '',
+            officeAddress: document.getElementById('officeAddress')?.value || ''
+        };
         
-        if (hasAnyContent) {
-            // Generate and display letter (even with partial data)
+        // Check if we have any meaningful content
+        const hasContent = Object.values(data).some(value => value && value.trim() !== '');
+        
+        // Also check if any template buttons have been clicked by looking at form state
+        const hasFormData = data.companyName || data.candidateName || data.position || data.salary;
+        
+        console.log('Has content:', hasContent, 'Has form data:', hasFormData);
+        
+        if (hasContent || hasFormData) {
+            // Generate and show letter
+            console.log('Generating letter with data:', data);
             const letterHTML = generateLetterHTML(data);
-            document.getElementById('letterPreview').innerHTML = letterHTML;
+            previewElement.innerHTML = letterHTML;
         } else {
             // Show placeholder
+            console.log('Showing placeholder - no content detected');
             showPlaceholder();
         }
-    }, 100); // 100ms delay for smooth typing
+    } catch (error) {
+        console.error('Error updating preview:', error);
+        showPlaceholder();
+    }
 }
 
 // Show placeholder
 function showPlaceholder() {
-    document.getElementById('letterPreview').innerHTML = `
-        <div class="default-preview">
-            <div class="preview-placeholder">
-                <div class="placeholder-icon">📄</div>
-                <h4>Live Preview</h4>
-                <p>Start filling out the form to see your offer letter appear here in real-time!</p>
-                <div class="preview-features">
-                    <div class="feature-item">✅ Template selection</div>
-                    <div class="feature-item">✅ Color schemes</div>
-                    <div class="feature-item">✅ Logo upload</div>
-                    <div class="feature-item">✅ Font customization</div>
-                    <div class="feature-item">✅ Layout options</div>
+    const previewElement = document.getElementById('letterPreview');
+    if (previewElement) {
+        previewElement.innerHTML = `
+            <div class="default-preview">
+                <div class="preview-placeholder">
+                    <div class="placeholder-icon">📄</div>
+                    <h4>Live Preview</h4>
+                    <p>Start filling out the form to see your offer letter appear here in real-time!</p>
+                    <div class="preview-features">
+                        <div class="feature-item">✅ Template selection</div>
+                        <div class="feature-item">✅ Color schemes</div>
+                        <div class="feature-item">✅ Logo upload</div>
+                        <div class="feature-item">✅ Font customization</div>
+                        <div class="feature-item">✅ Layout options</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
+    }
 }
 
 // Preview offer letter (legacy function for button)
@@ -954,7 +979,7 @@ function setLetterType(type) {
 }
 
 // Template data
-const templates = {
+const templateData = {
     'software-engineer': {
         letterType: 'Job Offer',
         companyName: 'TechCorp Solutions',
@@ -969,6 +994,7 @@ const templates = {
         hrTitle: 'Human Resources Manager',
         hrEmail: 'jennifer.martinez@techcorp.com',
         hrPhone: '(415) 555-0123',
+        officeAddress: '123 Tech Street\nSuite 500\nSan Francisco, CA 94105',
         layout: 'standard',
         colorScheme: 'blue',
         signatureStyle: 'professional'
@@ -987,6 +1013,7 @@ const templates = {
         hrTitle: 'Senior HR Specialist',
         hrEmail: 'david.thompson@growthmarketing.com',
         hrPhone: '(212) 555-0456',
+        officeAddress: '456 Marketing Avenue\nFloor 12\nNew York, NY 10001',
         layout: 'detailed',
         colorScheme: 'green',
         signatureStyle: 'friendly'
@@ -1005,6 +1032,7 @@ const templates = {
         hrTitle: 'HR Business Partner',
         hrEmail: 'lisa.rodriguez@enterprisesales.com',
         hrPhone: '(312) 555-0789',
+        officeAddress: '789 Sales Plaza\nSuite 200\nChicago, IL 60601',
         layout: 'casual',
         colorScheme: 'orange',
         signatureStyle: 'enthusiastic'
@@ -1023,6 +1051,7 @@ const templates = {
         hrTitle: 'People Operations Manager',
         hrEmail: 'marcus.johnson@designstudiopro.com',
         hrPhone: '(512) 555-0321',
+        officeAddress: '321 Creative Lane\nBuilding A\nAustin, TX 78701',
         layout: 'creative',
         colorScheme: 'purple',
         signatureStyle: 'creative'
@@ -1041,6 +1070,7 @@ const templates = {
         hrTitle: 'Talent Acquisition Specialist',
         hrEmail: 'rachel.green@startupxyz.com',
         hrPhone: '(206) 555-0654',
+        officeAddress: '555 Startup Boulevard\nFloor 3\nSeattle, WA 98101',
         layout: 'friendly',
         colorScheme: 'teal',
         signatureStyle: 'friendly'
@@ -1059,6 +1089,7 @@ const templates = {
         hrTitle: 'Contract Management Specialist',
         hrEmail: 'amanda.foster@consultingpartners.com',
         hrPhone: '(555) 555-0987',
+        officeAddress: 'Remote Work Environment\nConsulting Partners LLC\nVirtual Office',
         layout: 'formal',
         colorScheme: 'blue',
         signatureStyle: 'formal'
@@ -1077,6 +1108,7 @@ const templates = {
         hrTitle: 'Chief People Officer',
         hrEmail: 'victoria.chen@globalenterprises.com',
         hrPhone: '(617) 555-0246',
+        officeAddress: '100 Executive Tower\nPenthouse Suite\nBoston, MA 02101',
         layout: 'executive',
         colorScheme: 'purple',
         signatureStyle: 'executive'
@@ -1095,6 +1127,7 @@ const templates = {
         hrTitle: 'Remote Work Coordinator',
         hrEmail: 'kevin.park@remotefirst.com',
         hrPhone: '(555) 555-0135',
+        officeAddress: 'Remote First Headquarters\nDigital Office Space\nVirtual Location',
         layout: 'modern',
         colorScheme: 'green',
         signatureStyle: 'friendly'
@@ -1113,6 +1146,7 @@ const templates = {
         hrTitle: 'Human Resources Manager',
         hrEmail: 'hr@yourcompany.com',
         hrPhone: '(555) 555-0000',
+        officeAddress: 'Your Company Address\nSuite 100\nYour City, ST 12345',
         layout: 'detailed',
         colorScheme: 'blue',
         signatureStyle: 'professional'
@@ -1131,6 +1165,7 @@ const templates = {
         hrTitle: 'Human Resources Team',
         hrEmail: 'hr@yournewcompany.com',
         hrPhone: '(555) 555-0000',
+        officeAddress: 'New Company Office\nMain Building\nOffice Location',
         layout: 'casual',
         colorScheme: 'green',
         signatureStyle: 'friendly'
@@ -1149,6 +1184,7 @@ const templates = {
         hrTitle: 'Contract Administrator',
         hrEmail: 'contracts@yourcompany.com',
         hrPhone: '(555) 555-0000',
+        officeAddress: 'Contract Office\nLegal Department\nYour Company Address',
         layout: 'formal',
         colorScheme: 'blue',
         signatureStyle: 'professional'
@@ -1157,13 +1193,18 @@ const templates = {
 
 // Load template
 function loadTemplate(templateKey) {
+    console.log('Loading template:', templateKey);
+    
     if (templateKey === 'clear') {
         clearAllFields();
         return;
     }
     
-    const template = templates[templateKey];
-    if (!template) return;
+    const template = templateData[templateKey];
+    if (!template) {
+        console.error('Template not found:', templateKey);
+        return;
+    }
     
     // Set form fields
     document.getElementById('letterType').value = template.letterType;
@@ -1180,6 +1221,7 @@ function loadTemplate(templateKey) {
     if (template.hrTitle) document.getElementById('hrTitle').value = template.hrTitle;
     if (template.hrEmail) document.getElementById('hrEmail').value = template.hrEmail;
     if (template.hrPhone) document.getElementById('hrPhone').value = template.hrPhone;
+    if (template.officeAddress) document.getElementById('officeAddress').value = template.officeAddress;
     
     // Set start date to 30 days from now
     const futureDate = new Date();
@@ -1197,8 +1239,17 @@ function loadTemplate(templateKey) {
         selectSignatureStyle(template.signatureStyle);
     }
     
-    // Update preview
-    updateLivePreview();
+    // Force immediate preview update with sample data
+    console.log('Updating preview after template load...');
+    setTimeout(() => {
+        // Generate preview with the template data directly
+        const letterHTML = generateLetterHTML(template);
+        const previewElement = document.getElementById('letterPreview');
+        if (previewElement) {
+            previewElement.innerHTML = letterHTML;
+            console.log('Preview updated with template data');
+        }
+    }, 100);
     
     // Show success message
     showTemplateLoadedMessage(templateKey);
@@ -1381,31 +1432,184 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Form validation and live preview updates
     const form = document.getElementById('offerForm');
-    const inputs = form.querySelectorAll('input, textarea, select');
-    
-    inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            if (this.hasAttribute('required') && this.value.trim() === '') {
-                this.style.borderColor = '#ff4444';
-            } else {
-                this.style.borderColor = '#555555';
-            }
-        });
+    if (form) {
+        const inputs = form.querySelectorAll('input, textarea, select');
+        console.log('Setting up event listeners for', inputs.length, 'inputs');
         
-        input.addEventListener('input', function() {
-            if (this.style.borderColor === 'rgb(255, 68, 68)') {
-                this.style.borderColor = '#555555';
-            }
-            // Auto-update preview on input change
-            updateLivePreview();
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.hasAttribute('required') && this.value.trim() === '') {
+                    this.style.borderColor = '#ff4444';
+                } else {
+                    this.style.borderColor = '#555555';
+                }
+            });
+            
+            input.addEventListener('input', function() {
+                console.log('Input changed:', this.name, this.value);
+                if (this.style.borderColor === 'rgb(255, 68, 68)') {
+                    this.style.borderColor = '#555555';
+                }
+                // Auto-update preview on input change
+                updateLivePreview();
+            });
+            
+            input.addEventListener('change', function() {
+                console.log('Input changed (change event):', this.name, this.value);
+                // Auto-update preview on select/date changes
+                updateLivePreview();
+            });
         });
-        
-        input.addEventListener('change', function() {
-            // Auto-update preview on select/date changes
-            updateLivePreview();
-        });
-    });
+    } else {
+        console.error('Form not found for event listeners!');
+    }
     
     // Initialize with placeholder
+    console.log('Initializing preview...');
     showPlaceholder();
+    console.log('Preview initialized');
 });
+
+// Debug function - call from browser console: testPreview()
+function testPreview() {
+    console.log('Testing preview...');
+    const previewElement = document.getElementById('letterPreview');
+    if (previewElement) {
+        console.log('Preview element found');
+        
+        // Show test message first
+        previewElement.innerHTML = `
+            <div style="color: white; padding: 20px; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); border-radius: 15px; text-align: center;">
+                <h3>✅ Preview is working!</h3>
+                <p>If you can see this, the preview system is functioning correctly.</p>
+                <p>Now testing with sample data...</p>
+            </div>
+        `;
+        
+        // After 2 seconds, try to show a sample letter
+        setTimeout(() => {
+            console.log('Testing with sample data...');
+            
+            // Fill in some sample data
+            const sampleData = {
+                letterType: 'Job Offer',
+                companyName: 'TechCorp Solutions',
+                candidateName: 'John Doe',
+                position: 'Software Engineer',
+                salary: '75000',
+                startDate: '2024-02-01',
+                location: 'San Francisco, CA',
+                benefits: 'Health insurance, 401k, flexible PTO',
+                additionalNotes: 'Welcome to our team!',
+                hrName: 'Jane Smith',
+                hrTitle: 'HR Manager',
+                hrEmail: 'hr@techcorp.com',
+                hrPhone: '(555) 123-4567'
+            };
+            
+            const letterHTML = generateLetterHTML(sampleData);
+            previewElement.innerHTML = letterHTML;
+            console.log('Sample letter generated and displayed');
+        }, 2000);
+    } else {
+        console.error('Preview element not found!');
+    }
+}
+
+// Text Editor Functions
+function toggleTextEditor() {
+    const textEditor = document.getElementById('textEditor');
+    const toggleBtn = document.getElementById('toggleEditorBtn');
+    
+    if (textEditor.style.display === 'none') {
+        textEditor.style.display = 'block';
+        toggleBtn.textContent = '📝 Hide Editor';
+        
+        // Load current letter content into editor
+        loadLetterIntoEditor();
+    } else {
+        textEditor.style.display = 'none';
+        toggleBtn.textContent = '📝 Edit Text';
+    }
+}
+
+function loadLetterIntoEditor() {
+    const editor = document.getElementById('letterTextEditor');
+    if (!editor) return;
+    
+    // Generate current letter content
+    const form = document.getElementById('offerForm');
+    const formData = new FormData(form);
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    // Get the letter body content (without header/signature)
+    const currentDate = getCurrentDate();
+    const formattedSalary = data.salary ? formatCurrency(parseInt(data.salary)) : '[Salary]';
+    const formattedStartDate = data.startDate ? formatDate(data.startDate) : '[Start Date]';
+    
+    let bodyContent = '';
+    switch(selectedLayout) {
+        case 'compact': bodyContent = generateCompactLayout(data, currentDate, formattedSalary, formattedStartDate); break;
+        case 'detailed': bodyContent = generateDetailedLayout(data, currentDate, formattedSalary, formattedStartDate); break;
+        case 'executive': bodyContent = generateExecutiveLayout(data, currentDate, formattedSalary, formattedStartDate); break;
+        case 'casual': bodyContent = generateCasualLayout(data, currentDate, formattedSalary, formattedStartDate); break;
+        case 'formal': bodyContent = generateFormalLayout(data, currentDate, formattedSalary, formattedStartDate); break;
+        case 'creative': bodyContent = generateCreativeLayout(data, currentDate, formattedSalary, formattedStartDate); break;
+        case 'minimalist': bodyContent = generateMinimalistLayout(data, currentDate, formattedSalary, formattedStartDate); break;
+        default: bodyContent = generateStandardLayout(data, currentDate, formattedSalary, formattedStartDate);
+    }
+    
+    editor.value = bodyContent;
+    
+    // Add event listener for real-time updates
+    editor.addEventListener('input', function() {
+        updateLivePreview();
+    });
+}
+
+function applyStyle(style, value) {
+    const editor = document.getElementById('letterTextEditor');
+    if (!editor) return;
+    
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const selectedText = editor.value.substring(start, end);
+    
+    if (!selectedText) {
+        alert('Please select text to apply styling');
+        return;
+    }
+    
+    let styledText = '';
+    switch(style) {
+        case 'bold':
+            styledText = `<strong>${selectedText}</strong>`;
+            break;
+        case 'italic':
+            styledText = `<em>${selectedText}</em>`;
+            break;
+        case 'underline':
+            styledText = `<u>${selectedText}</u>`;
+            break;
+        case 'fontSize':
+            styledText = `<span style="font-size: ${value};">${selectedText}</span>`;
+            break;
+        case 'color':
+            styledText = `<span style="color: ${value};">${selectedText}</span>`;
+            break;
+    }
+    
+    const newText = editor.value.substring(0, start) + styledText + editor.value.substring(end);
+    editor.value = newText;
+    updateLivePreview();
+}
+
+function resetToTemplate() {
+    if (confirm('Are you sure you want to reset to the template? This will overwrite your custom text.')) {
+        loadLetterIntoEditor();
+    }
+}
+
