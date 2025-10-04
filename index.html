@@ -8,6 +8,20 @@
 </head>
 <body>
     <div class="container">
+        <!-- Search Section -->
+        <div class="search-section">
+            <h1 class="search-title">AnySite Search</h1>
+            <p class="search-subtitle">Find tools, features, and content across the website</p>
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <input type="text" id="searchInput" placeholder="Try: 'offer letter', 'features', or 'tools'..." class="search-input">
+                    <div id="searchDropdown" class="search-dropdown"></div>
+                </div>
+                <button onclick="performSearch()" class="search-button">🔍 Search</button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+        
         <button class="anythink-button" onclick="goToFeatures()">anythink</button>
     </div>
     <script src="script.js"></script>
