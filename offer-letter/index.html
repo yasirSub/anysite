@@ -333,11 +333,53 @@
                             <label for="hrPhone">HR Phone:</label>
                             <input type="tel" id="hrPhone" name="hrPhone" placeholder="(555) 123-4567">
                         </div>
+
+                        <div class="signature-group">
+                            <label for="officeAddress">Office Address:</label>
+                            <textarea id="officeAddress" name="officeAddress" rows="3" placeholder="Enter complete office address&#10;e.g., 123 Business Street&#10;Suite 100&#10;New York, NY 10001"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Text Editor Section -->
+                    <div class="section-header">
+                        <h3>✏️ Edit Letter Text</h3>
+                    </div>
+                    <div class="text-editor-section">
+                        <div class="editor-controls">
+                            <button type="button" class="editor-btn" onclick="toggleTextEditor()" id="toggleEditorBtn">📝 Edit Text</button>
+                            <button type="button" class="editor-btn" onclick="resetToTemplate()">🔄 Reset to Template</button>
+                        </div>
+                        <div class="text-editor" id="textEditor" style="display: none;">
+                            <textarea id="letterTextEditor" rows="15" placeholder="Edit your offer letter text here..."></textarea>
+                            <div class="style-controls">
+                                <button type="button" class="style-btn" onclick="applyStyle('bold')" title="Bold">B</button>
+                                <button type="button" class="style-btn" onclick="applyStyle('italic')" title="Italic">I</button>
+                                <button type="button" class="style-btn" onclick="applyStyle('underline')" title="Underline">U</button>
+                                <select class="style-select" onchange="applyStyle('fontSize', this.value)">
+                                    <option value="">Font Size</option>
+                                    <option value="12px">12px</option>
+                                    <option value="14px">14px</option>
+                                    <option value="16px">16px</option>
+                                    <option value="18px">18px</option>
+                                    <option value="20px">20px</option>
+                                </select>
+                                <select class="style-select" onchange="applyStyle('color', this.value)">
+                                    <option value="">Text Color</option>
+                                    <option value="#000000">Black</option>
+                                    <option value="#333333">Dark Gray</option>
+                                    <option value="#667eea">Blue</option>
+                                    <option value="#4CAF50">Green</option>
+                                    <option value="#f44336">Red</option>
+                                    <option value="#9c27b0">Purple</option>
+                                    <option value="#ff9800">Orange</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-actions">
                         <button type="button" class="preview-btn" onclick="previewOffer()">Preview Letter</button>
-                        <button type="button" class="generate-btn" onclick="generateOffer()">Generate PDF</button>
+                        <button type="button" class="generate-btn" onclick="generateOffer()">Download PDF</button>
                     </div>
                 </form>
             </div>
@@ -347,6 +389,7 @@
                     <h3>Live Preview</h3>
                     <div class="preview-controls">
                         <button class="refresh-btn" onclick="updateLivePreview()">🔄 Refresh</button>
+                        <button class="refresh-btn" onclick="testPreview()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">🧪 Test</button>
                         <button class="close-preview" onclick="togglePreview()">📱 Hide</button>
                     </div>
                 </div>
@@ -369,6 +412,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 
     <script src="offer-script.js"></script>
